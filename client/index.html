@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>
+		Angular Test
+	</title>
+</head>
+<body ng-app="myApp">
+
+	<div ng-controller="MainController">
+		{{ message }}
+		<br>
+
+		<input type="text" ng-model="name" ng-change="search()">
+		<h3>Hello : {{ name }}</h3>
+
+		<h3>List of Employees</h3>
+		<ul>
+			<li ng-repeat="emp in employees">
+				<p>Name. : {{ emp.employee.fName }} {{ emp.employee.lName }}</p>
+				<p>Short name : {{ emp.employee.sName }}</p>
+				<p>Position : {{ emp.employee.department }}</p>
+			</li>
+		</ul>
+
+	</div>
+
+</body>	
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+<script src="./index.js"></script>
+</html>

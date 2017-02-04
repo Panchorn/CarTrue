@@ -1,0 +1,21 @@
+{
+  "name": "CarTrue",
+  "version": "1.0.0",
+  "description": "True & SWU present carpooling project.",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon ./bin/www"
+  },
+  "dependencies":{
+    "express":"*",
+    "body-parser":"*",
+    "mongoose":"*",
+    "mongojs":"*",
+    "debug": "*"
+  },
+  "keywords": [
+    "cartrue"
+  ],
+  "author": "True & SWU",
+  "license": "ISC"
+}
