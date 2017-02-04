@@ -1,0 +1,15 @@
+- ทำ noti ตอนส่ง request (ทั้ง passenger และ driver)
+- ทำ node ให้ส่ง noti จากการตอบรับของ driver กลับไปให้ passenger
+- (เสร็จแล้ว)ทำให้ตอน login เสร็จแล้วส่ง device_key เข้าไปเก็บใน db เอาไว้ใช้ทำ noti
+- สไลด์บาร์ข้างล่างตอน passenger เลือก driver
+- เช็คที่ว่างของ driver เต็มรึยัง (เต็มแล้วให้ backend แก้ status กับ cur_seat)
+- ถ้า driver ยกเลิกการเดินทางให้ส่ง noti ไปบอก passenger ที่ accepted แล้ว
+- driver กดเริ่มออกเดินทางและกดตอนถึงจุดหมาย
+- ทำตอนกดขึ้นรถและลงรถ (โหวตให้คะแนน) 
+- ทำให้ driver กดรับ request บนหน้า maps ได้
+- ทำ current location ของทั้ง driver, passenger (น่าจะต้องเพิ่ม collection)
+- แก้ไขข้อมูลรถ + อัพรูปรถขึ้นเซิฟได้
+- สร้างโฟลเดอร์รูปแบ่งเก็บเป็นปีบนเซิฟเวอร์
+- บัคเวลาที่ insert เข้า db ไม่ตรง (น่าจะเกี่ยวกับ timezone)
+- บัคเวลา timestamp เปลี่ยนทุกครั้งที่เรียกดู (แก้ที่ backend)
+- (เสร็จแล้ว)บัค lat, lng ไม่ตรง

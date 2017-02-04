@@ -32,6 +32,7 @@ Rou = require('./client/models/routes');
 Req = require('./client/models/requests');
 Lan = require('./client/models/landmarks');
 Mat = require('./client/controllers/matching');
+Nor = require('./client/controllers/sendnorti');
 
 //Connect to mongoose
 // mongoose.Promise = global.Promise;
@@ -349,6 +350,26 @@ app.post('/matching', function (req, res) {
         }
         else { 
             console.log('matching pass');
+            res.send(result);
+        }
+    });
+});
+
+
+//----------------------------------------------------------------------------
+// for matching process!!!
+//----------------------------------------------------------------------------
+
+//sendnorti
+//client have to send 'driver_id' here!
+app.post('/norti', function (req, res) {
+    var request = req.body;
+    Nor.sendnorti(req.body.driverid,req.body.fname, function(result, err){
+        if (err) { 
+            console.error('err');
+        }
+        else { 
+            console.log('send succes');
             res.send(result);
         }
     });

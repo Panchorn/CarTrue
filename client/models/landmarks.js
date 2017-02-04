@@ -64,45 +64,55 @@ module.exports.removeLandmark = function(landid, callback) {
 
 // /* 1 */
 // {
-//     "land_id" : "0001",
+//     "_id" : ObjectId("5863eb401a616a22e8150912"),
+//     "land_id" : "1",
 //     "name" : "Terminal 21",
-//     "lat" : "13.7376599",
-//     "lng" : "100.5582062",
-//     "addr" : "sukhumvit19 bkk"
+//     "lat" : "13.73762",
+//     "lng" : "100.56038",
+//     "addr" : "sukhumvit19 bkk",
+//     "__v" : 0
 // }
 
 // /* 2 */
 // {
-//     "land_id" : "0002",
+//     "_id" : ObjectId("5863eb551a616a22e8150913"),
+//     "land_id" : "2",
 //     "name" : "SWU",
 //     "lat" : "13.7454649",
 //     "lng" : "100.5631804",
-//     "addr" : "sukhumvit23 bkk"
+//     "addr" : "sukhumvit23 bkk",
+//     "__v" : 0
 // }
 
 // /* 3 */
 // {
-//     "land_id" : "0003",
+//     "_id" : ObjectId("5863eb5e1a616a22e8150914"),
+//     "land_id" : "3",
 //     "name" : "True tower",
-//     "lat" : "13.762409",
-//     "lng" : "100.5659413",
-//     "addr" : "dindaeng bkk"
+//     "lat" : "13.7624",
+//     "lng" : "100.56813",
+//     "addr" : "dindaeng bkk",
+//     "__v" : 0
 // }
 
 // /* 4 */
 // {
-//     "land_id" : "0004",
+//     "_id" : ObjectId("5863eb681a616a22e8150915"),
+//     "land_id" : "4",
 //     "name" : "Siam Paragon",
-//     "lat" : "13.7459332",
-//     "lng" : "100.5325513",
-//     "addr" : "patumwan bkk"
+//     "lat" : "13.74576",
+//     "lng" : "100.53419",
+//     "addr" : "patumwan bkk",
+//     "__v" : 0
 // }
 
 // /* 5 */
 // {
-//     "land_id" : "0005",
+//     "_id" : ObjectId("5863eb721a616a22e8150916"),
+//     "land_id" : "5",
 //     "name" : "Bts onnut",
-//     "lat" : "13.7055818",
-//     "lng" : "100.5988887",
-//     "addr" : "prakanong sukhumvit bkk"
+//     "lat" : "13.70562",
+//     "lng" : "100.60099",
+//     "addr" : "prakanong sukhumvit bkk",
+//     "__v" : 0
 // }

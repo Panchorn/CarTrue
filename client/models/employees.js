@@ -104,8 +104,9 @@ module.exports.loginEmp = function(emp, callback) {
 //-------------------------- data example---------------------------
 // /* 1 */
 // {
+//     "_id" : ObjectId("585c036a06eeb71eb8b0c742"),
 //     "employee" : {
-//         "emp_id" : "0001",
+//         "emp_id" : "1",
 //         "email" : "chavP@gmail.com",
 //         "password" : "12345678",
 //         "fName" : "Parinya",
@@ -113,9 +114,9 @@ module.exports.loginEmp = function(emp, callback) {
 //         "sName" : "ChavP",
 //         "gender" : "male",
 //         "birth" : ISODate("1990-08-22T03:00:00.000Z"),
-//         "phone": "0800001234",
+//         "phone" : "0800001234",
 //         "department" : "development",
-//         "pic": "http://thesocialmediamonthly.com/wp-content/uploads/2015/08/photo.png",
+//         "pic" : "http://47.88.241.73/CarTrue/images/profile/1.jpg",
 //         "login" : false
 //     },
 //     "car" : {
@@ -124,13 +125,15 @@ module.exports.loginEmp = function(emp, callback) {
 //         "color" : "red",
 //         "license" : "49005678",
 //         "register" : true
-//     }
+//     },
+//     "__v" : 0
 // }
 
 // /* 2 */
 // {
+//     "_id" : ObjectId("585c045506eeb71eb8b0c743"),
 //     "employee" : {
-//         "emp_id" : "0002",
+//         "emp_id" : "2",
 //         "email" : "nonpcn@gmail.com",
 //         "password" : "admin",
 //         "fName" : "Panchorn",
@@ -138,10 +141,11 @@ module.exports.loginEmp = function(emp, callback) {
 //         "sName" : "Non",
 //         "gender" : "male",
 //         "birth" : ISODate("1995-04-02T19:00:00.000Z"),
-//         "phone": "0923122231",
+//         "phone" : "0923122231",
 //         "department" : "Human Resource",
-//         "pic": "http://thesocialmediamonthly.com/wp-content/uploads/2015/08/photo.png",
-//         "login" : false
+//         "pic" : "http://47.88.241.73/CarTrue/images/profile/2.jpg",
+//         "login" : false,
+//         "regtoken" : "da-ufnTBm28:APA91bHH8a3uNaYADyxheWmEOea2_6cz8qZ2r1TFUbufD-JETqkn0ysNOr3uvlKLzprwt5z5yg6t3VY8_CeO9Wlvy2rUyKNcfAPiX5Qa_WwvVuJGdFI5FSGJuG9vSP3NxrmgB1FMIZbV"
 //     },
 //     "car" : {
 //         "number" : "aa1221",
@@ -149,13 +153,15 @@ module.exports.loginEmp = function(emp, callback) {
 //         "color" : "black",
 //         "license" : "49001111",
 //         "register" : true
-//     }
+//     },
+//     "__v" : 0
 // }
 
 // /* 3 */
 // {
+//     "_id" : ObjectId("585c04d506eeb71eb8b0c744"),
 //     "employee" : {
-//         "emp_id" : "0003",
+//         "emp_id" : "3",
 //         "email" : "nsunday@gmail.com",
 //         "password" : "root",
 //         "fName" : "Non",
@@ -163,9 +169,9 @@ module.exports.loginEmp = function(emp, callback) {
 //         "sName" : "Non",
 //         "gender" : "male",
 //         "birth" : ISODate("1993-07-09T22:30:00.000Z"),
-//         "phone": "0871239870",
+//         "phone" : "0871239870",
 //         "department" : "Human Resource",
-//         "pic": "http://thesocialmediamonthly.com/wp-content/uploads/2015/08/photo.png",
+//         "pic" : "http://47.88.241.73/CarTrue/images/profile/3.jpg",
 //         "login" : false
 //     },
 //     "car" : {
@@ -174,22 +180,24 @@ module.exports.loginEmp = function(emp, callback) {
 //         "color" : "white",
 //         "license" : "49008888",
 //         "register" : true
-//     }
+//     },
+//     "__v" : 0
 // }
 
 // /* 4 */
 // {
+//     "_id" : ObjectId("585c04ef06eeb71eb8b0c745"),
 //     "employee" : {
-//         "emp_id" : "0004",
+//         "emp_id" : "4",
 //         "email" : "nrohcnap@gmail.com",
 //         "password" : "naprel",
 //         "fName" : "Nrohcnap",
 //         "lName" : "Adapivtrel",
 //         "sName" : "Nap",
 //         "gender" : "female",
-//         "phone": "021139887",
+//         "phone" : "021139887",
 //         "department" : "Development",
-//         "pic": "http://thesocialmediamonthly.com/wp-content/uploads/2015/08/photo.png",
+//         "pic" : "http://47.88.241.73/CarTrue/images/profile/4.jpg",
 //         "login" : false
 //     },
 //     "car" : {
@@ -198,65 +206,87 @@ module.exports.loginEmp = function(emp, callback) {
 //         "color" : "black",
 //         "license" : "49005577",
 //         "register" : true
-//     }
+//     },
+//     "__v" : 0
 // }
 
 // /* 5 */
 // {
+//     "_id" : ObjectId("585c051c06eeb71eb8b0c746"),
 //     "employee" : {
-//         "emp_id" : "0005",
-//         "email" : "winsonjw@gmail.com",
-//         "password" : "12345678",
-//         "fName" : "John",
-//         "lName" : "Winson",
-//         "sName" : "JW",
-//         "gender" : "male",
-//         "birth" : ISODate("1992-11-01T11:40:00.000Z"),
-//         "phone": "089752214",
+//         "regtoken" : "c_Gxxh0PyIY:APA91bHvholvYmn_pUXlo4UpYNhlPs-7lscDhBSDUCw8UYf-a8TjNoN_HUb_tpG3SUR_f4_mmE2eos5Sfzlaix0g1Otl-aUL3U-QavO-vzr9dgf2rrltZ_2oRRD6kPAl67myUs2Kaxvv",
+//         "login" : true,
+//         "pic" : "http://47.88.241.73/CarTrue/images/profile/5.jpg",
 //         "department" : "System Analysis",
-//         "pic": "http://thesocialmediamonthly.com/wp-content/uploads/2015/08/photo.png",
-//         "login" : false
+//         "phone" : "089752214",
+//         "gender" : "male",
+//         "sName" : "JW",
+//         "lName" : "Winson",
+//         "fName" : "John",
+//         "password" : "12345678",
+//         "email" : "winsonjw@gmail.com",
+//         "emp_id" : "5"
 //     },
 //     "car" : {
-//         "register" : false
-//     }
+//         "register" : true,
+//         "license" : "1234",
+//         "number" : "test1234",
+//         "model" : "test",
+//         "color" : "test"
+//     },
+//     "__v" : 0
 // }
 
 // /* 6 */
 // {
+//     "_id" : ObjectId("585c052e06eeb71eb8b0c747"),
 //     "employee" : {
-//         "emp_id" : "0006",
-//         "email" : "js@msn.com",
-//         "password" : "12221",
-//         "fName" : "John",
-//         "lName" : "Snow",
+//         "regtoken" : "e0ZTn741fts:APA91bG4KjLQc1FTTnhy6RcDNvvMJt7sQ_0lIIYM6sPxMCR0WkYgftX5oWYQDXDkrikIeUiXx68sCvguh7FvYzPcEz8Q90SxEqs0I4bUef6CN_I13D7HbShaL9V48u2JeETddieNbf9X",
+//         "login" : true,
+//         "pic" : "http://47.88.241.73/CarTrue/images/profile/6.jpg",
+//         "department" : "IT",
+//         "phone" : "0899999999",
 //         "gender" : "male",
-//         "phone": "0918277726",
-//         "department" : "Manager,HR",
-//         "pic": "http://thesocialmediamonthly.com/wp-content/uploads/2015/08/photo.png",
-//         "login" : false
+//         "sName" : "Ossas",
+//         "lName" : "msn",
+//         "fName" : "js",
+//         "password" : "12345",
+//         "email" : "js@msn.com",
+//         "emp_id" : "6"
 //     },
 //     "car" : {
-//         "register" : false
-//     }
+//         "register" : true,
+//         "license" : "12tejgduwmdn",
+//         "color" : "Gold",
+//         "model" : "sl123",
+//         "number" : "Saleng"
+//     },
+//     "__v" : 0
 // }
 
 // /* 7 */
 // {
+//     "_id" : ObjectId("585d39473283781bb4563e3d"),
 //     "employee" : {
-//         "emp_id" : "0007",
-//         "email" : "m@m.m",
-//         "password" : "mmmmm",
-//         "fName" : "tester",
-//         "lName" : "handsome",
-//         "sName" : "Ossas",
-//         "gender" : "male",
-//         "phone" : "0899999999",
+//         "regtoken" : "ew6uiG-9zZs:APA91bGkm2-RsyRzy7TpG_rUd6LaofRU7bVxLRLAdC-JFg2mj1hplBSp0tdkjeBSuE4L0I6Nsc2WAALSzrVEBgOsyQtUkf6BId-06vRKiUScn5VctIj0WWasuLjeR0v4CrqhetFU_wdY",
+//         "login" : true,
+//         "pic" : "http://47.88.241.73/CarTrue/images/profile/7.jpg",
 //         "department" : "IT",
-//         "pic" : "https://scontent.fbkk2-1.fna.fbcdn.net/v/t1.0-9/13423902_1375022525846194_2828488072321914208_n.jpg?oh=be39990bfe7aab6d38373be71d83e937&oe=58F4BFCF",
-//         "login" : false
+//         "phone" : "0899999999",
+//         "gender" : "male",
+//         "sName" : "Ossas",
+//         "lName" : "handsome",
+//         "fName" : "tester",
+//         "password" : "mmmmm",
+//         "email" : "m@m.m",
+//         "emp_id" : "7"
 //     },
 //     "car" : {
-//         "register" : false
-//     }
+//         "register" : true,
+//         "license" : "asdsadasdsadas",
+//         "color" : "blue",
+//         "model" : "cam",
+//         "number" : "aa9999"
+//     },
+//     "__v" : 0
 // }

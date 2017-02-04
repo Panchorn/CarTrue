@@ -90,41 +90,15 @@ module.exports.updateStatusCancel = function(requestid, options, callback) {
 }
 
 
-//----------------------------------------------------------------------------
-// for change status to timeout
-//----------------------------------------------------------------------------
-
-// function changeStatusToTimeout() {
-// 	var util = require('util');
-// 	var events = require('events');
-// 	class Ticker { 
-// 		constructor(){
-// 			let handler = () => this.emit('tick');
-
-// 			setInterval(handler, 1000); 
-// 		}
-// 	}
-// 	util.inherits(Ticker, events.EventEmitter);
-// 	let ticker = new Ticker(); 
-// 	let i = 0;
-
-	 
-// 		ticker.on('tick', function() {
-// 			i++;
-// 			console.log(i);
-// 			if (i <= 5) ticker.emit('tick');
-// 		});
-// }
-
-
 
 
 //-------------------------- data example---------------------------
 // /* 1 */
 // {
-//     "request_id" : "0001",
-//     "route_id" : "0001",
-//     "passenger_id" : "0005",
+//     "_id" : ObjectId("585e4366e27725c2b38f99bc"),
+//     "request_id" : "1",
+//     "route_id" : "1",
+//     "passenger_id" : "5",
 //     "origin" : {
 //         "name" : "Bts onnut",
 //         "lat" : "13.7055818",
@@ -147,9 +121,10 @@ module.exports.updateStatusCancel = function(requestid, options, callback) {
 
 // /* 2 */
 // {
-//     "request_id" : "0002",
-//     "route_id" : "0001",
-//     "passenger_id" : "0006",
+//     "_id" : ObjectId("585e4701e27725c2b38f99bd"),
+//     "request_id" : "2",
+//     "route_id" : "1",
+//     "passenger_id" : "6",
 //     "origin" : {
 //         "name" : "Bts onnut",
 //         "lat" : "13.7055818",
@@ -172,9 +147,10 @@ module.exports.updateStatusCancel = function(requestid, options, callback) {
 
 // /* 3 */
 // {
-//     "request_id" : "0003",
-//     "route_id" : "0001",
-//     "passenger_id" : "0003",
+//     "_id" : ObjectId("585e47b3e27725c2b38f99be"),
+//     "request_id" : "3",
+//     "route_id" : "1",
+//     "passenger_id" : "3",
 //     "origin" : {
 //         "name" : "Bts onnut",
 //         "lat" : "13.7055818",
@@ -197,9 +173,10 @@ module.exports.updateStatusCancel = function(requestid, options, callback) {
 
 // /* 4 */
 // {
-//     "request_id" : "0004",
-//     "route_id" : "0002",
-//     "passenger_id" : "0002",
+//     "_id" : ObjectId("585e4a20e27725c2b38f99bf"),
+//     "request_id" : "4",
+//     "route_id" : "2",
+//     "passenger_id" : "2",
 //     "origin" : {
 //         "name" : "Siam Paragon",
 //         "lat" : "13.7459332",
@@ -222,9 +199,10 @@ module.exports.updateStatusCancel = function(requestid, options, callback) {
 
 // /* 5 */
 // {
-//     "request_id" : "0005",
-//     "route_id" : "0002",
-//     "passenger_id" : "0004",
+//     "_id" : ObjectId("585e4c32e27725c2b38f99c0"),
+//     "request_id" : "5",
+//     "route_id" : "2",
+//     "passenger_id" : "4",
 //     "origin" : {
 //         "name" : "Siam Paragon",
 //         "lat" : "13.7459332",
@@ -247,9 +225,10 @@ module.exports.updateStatusCancel = function(requestid, options, callback) {
 
 // /* 6 */
 // {
-//     "request_id" : "0006",
-//     "route_id" : "0003",
-//     "passenger_id" : "0005",
+//     "_id" : ObjectId("585e4ed9e27725c2b38f99c1"),
+//     "request_id" : "6",
+//     "route_id" : "3",
+//     "passenger_id" : "5",
 //     "origin" : {
 //         "name" : "True tower",
 //         "lat" : "13.762409",
@@ -272,9 +251,10 @@ module.exports.updateStatusCancel = function(requestid, options, callback) {
 
 // /* 7 */
 // {
-//     "request_id" : "0007",
-//     "route_id" : "0004",
-//     "passenger_id" : "0001",
+//     "_id" : ObjectId("585e5335e27725c2b38f99c2"),
+//     "request_id" : "7",
+//     "route_id" : "4",
+//     "passenger_id" : "1",
 //     "origin" : {
 //         "name" : "Teminal 21",
 //         "lat" : "13.7376599",
@@ -297,9 +277,10 @@ module.exports.updateStatusCancel = function(requestid, options, callback) {
 
 // /* 8 */
 // {
-//     "request_id" : "0008",
-//     "route_id" : "0004",
-//     "passenger_id" : "0005",
+//     "_id" : ObjectId("585e539ee27725c2b38f99c3"),
+//     "request_id" : "8",
+//     "route_id" : "4",
+//     "passenger_id" : "5",
 //     "origin" : {
 //         "name" : "Teminal 21",
 //         "lat" : "13.7376599",
@@ -318,9 +299,10 @@ module.exports.updateStatusCancel = function(requestid, options, callback) {
 
 // /* 9 */
 // {
-//     "request_id" : "0009",
-//     "route_id" : "0004",
-//     "passenger_id" : "0006",
+//     "_id" : ObjectId("585e545ce27725c2b38f99c4"),
+//     "request_id" : "9",
+//     "route_id" : "4",
+//     "passenger_id" : "6",
 //     "origin" : {
 //         "name" : "Teminal 21",
 //         "lat" : "13.7376599",
@@ -339,9 +321,10 @@ module.exports.updateStatusCancel = function(requestid, options, callback) {
 
 // /* 10 */
 // {
-//     "request_id" : "0010",
-//     "route_id" : "0004",
-//     "passenger_id" : "0006",
+//     "_id" : ObjectId("585e5497e27725c2b38f99c5"),
+//     "request_id" : "10",
+//     "route_id" : "4",
+//     "passenger_id" : "6",
 //     "origin" : {
 //         "name" : "Teminal 21",
 //         "lat" : "13.7376599",
