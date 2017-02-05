@@ -28,7 +28,7 @@ const requestSchema = db.Mongoose.Schema({
 		default: "waiting"
 	},
 	note: { type: String },
-	timestamp:{ type: Date, default: Date.now }
+	timestamp: { type: Date },
 }, {collection:'Requests'});
 
 //----------------------------------------------------------------------------
@@ -69,6 +69,12 @@ module.exports.getRouteForHistoryP = function(passengerid, callback) {
 // Add new Request
 module.exports.addRequest = function(request, callback) {
 	Req.create(request, callback);
+}
+
+// Update Timestamp after insert new request
+module.exports.updateTimestamp = function(requestid, options, callback) {
+	var query = {'request_id': requestid};
+	Req.findOneAndUpdate(query, {'timestamp': new Date()}, options , callback);
 }
 
 // Update Request

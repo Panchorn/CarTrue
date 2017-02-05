@@ -12,31 +12,31 @@
 // module.exports.Connection = db;
 // module.exports.Mongoose = mongoose;
 
-//serv lnw
-const mongoose = require('mongoose');
-var opt = {
-        user: 'admin02',
-        pass: 'pass',
-        auth: {
-            authdb: 'CarTrue'
-        }
-    };
-var db = mongoose.createConnection( '47.88.241.73', 'CarTrue', 27017, opt);
-
-module.exports.Connection = db;
-module.exports.Mongoose = mongoose;
-
-
-// //serv localhost
+// //serv lnw
 // const mongoose = require('mongoose');
 // var opt = {
-//         user: 'nadmin',
-//         pass: 'nadmin',
+//         user: 'admin02',
+//         pass: 'pass',
 //         auth: {
 //             authdb: 'CarTrue'
 //         }
 //     };
-// var db = mongoose.createConnection( 'localhost', 'CarTrue', 27017, opt);
+// var db = mongoose.createConnection( '47.88.241.73', 'CarTrue', 27017, opt);
 
 // module.exports.Connection = db;
 // module.exports.Mongoose = mongoose;
+
+
+//serv localhost
+const mongoose = require('mongoose');
+var opt = {
+        user: 'nadmin',
+        pass: 'nadmin',
+        auth: {
+            authdb: 'CarTrue'
+        }
+    };
+var db = mongoose.createConnection( 'localhost', 'CarTrue', 27017, opt);
+
+module.exports.Connection = db;
+module.exports.Mongoose = mongoose;

@@ -29,7 +29,7 @@ const routeSchema = db.Mongoose.Schema({
 		type: String, 
 		enum: ["ready", "please_wait","in_travel", "arrived", "cancel"], 
 		default: "please_wait" },
-	timestamp:{ type: Date, default: Date.now }
+	timestamp:{ type: Date }
 }, {collection:'Routes'});
 
 //----------------------------------------------------------------------------
@@ -79,10 +79,16 @@ module.exports.addRoute = function(route, callback) {
 	Rou.create(route, callback);
 }
 
+// Update Timestamp after insert new route
+module.exports.updateTimestamp = function(routeid, options, callback) {
+	var query = {'route_id': routeid};
+	Rou.findOneAndUpdate(query, {'timestamp': new Date()}, options , callback);
+}
+
 // Update Route
 module.exports.updateRoute = function(routeid, route, options, callback) {
 	var query = {'route_id': routeid};
-	Rou.findOneAndUpdate(query, route, options, callback);
+	Rou.findOneAndUpdate(query, route, options , callback);
 }
 
 // Delete Route

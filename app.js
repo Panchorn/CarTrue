@@ -2,16 +2,6 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
-// const mongoose = require('mongoose');
-// mongoose.connection.on("open", function(ref) {
-//   console.log("Connected to mongo server.");
-//   return start_up();
-// });
-// mongoose.connection.on("error", function(err) {
-//   console.log("Could not connect to mongo server!");
-//   return console.log(err);
-// });
-
 const port = process.env.PORT || 3001;
 
 //todo: 20161230: Jun : for fix issue: CORS -> http://enable-cors.org/server_expressjs.html
@@ -169,6 +159,9 @@ app.post('/route/newroute', function (req, res) {
     Rou.addRoute(route, function(err, data) {
         if (err) { console.error(err); res.send(err.toString()); }
         else { 
+            Rou.updateTimestamp(data.route_id, function(err, data) {
+                console.log('updated timestamp');
+            });
             console.log('Added route no.' + data.route_id); 
             res.json(data.route_id); 
         }
@@ -228,6 +221,9 @@ app.post('/request/newrequest', function (req, res) {
     Req.addRequest(request, function(err, data) {
         if (err) { console.error(err); res.send(err.toString()); }
         else { 
+            Req.updateTimestamp(data.request_id, function(err, data) {
+                console.log('updated timestamp');
+            });
             console.log('Added request no.' + data.request_id); 
             res.json('Added request no.' + data.request_id); 
         }
