@@ -50,6 +50,14 @@ app.get('/index', function (req, res) {
     res.send('<h1>This is index page</h1>');
 });
 
+//get on regtoken by emp_id
+app.get('/regtoken/id/:empid', function(req, res) {
+    Emp.getRegToken(req.params.empid, function(err, data) {
+        if (err) { console.error(err); }
+        else { console.log(data); res.json(data.employee.regtoken); 
+    });
+});
+
 //get all users 
 app.get('/emp/users', function (req, res) {
     Emp.getEmps(function (err, data){
@@ -353,7 +361,7 @@ app.post('/matching', function (req, res) {
 
 
 //----------------------------------------------------------------------------
-// for matching process!!!
+// for notification process!!!
 //----------------------------------------------------------------------------
 
 //sendnorti
