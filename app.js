@@ -50,6 +50,14 @@ app.get('/index', function (req, res) {
     res.send('<h1>This is index page</h1>');
 });
 
+//get on regtoken by emp_id
+app.get('/regtoken/id/:empid', function(req, res) {
+    Emp.getRegToken(req.params.empid, function(err, data) {
+        if (err) { console.error(err); }
+        else { console.log(data); res.json(data.employee.regtoken); }
+    });
+});
+
 //get all users 
 app.get('/emp/users', function (req, res) {
     Emp.getEmps(function (err, data){
@@ -148,6 +156,15 @@ app.get('/route/routeid/:routeid', function (req, res) {
 //get route for history page (driver)
 app.get('/route/history/driverid/:driverid', function (req, res) {
     Rou.getRouteForHistoryD(req.params.driverid, function (err, data) {
+        if (err) { console.error(err); res.json(err); }
+        else { console.log(data); res.json(data); }
+    });
+});
+
+//get route to select driver
+app.post('/route/selectDriver', function (req, res) {
+    var route = req.body;
+    Rou.getRouteToSelectDriver(route.from, route.to, route.direction, function (err, data) {
         if (err) { console.error(err); res.json(err); }
         else { console.log(data); res.json(data); }
     });
@@ -353,7 +370,7 @@ app.post('/matching', function (req, res) {
 
 
 //----------------------------------------------------------------------------
-// for matching process!!!
+// for send notification process!!!
 //----------------------------------------------------------------------------
 
 //sendnorti

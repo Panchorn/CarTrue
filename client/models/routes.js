@@ -74,6 +74,17 @@ module.exports.getRouteForHistoryD = function(driverid, callback) {
 	// 			callback);
 }
 
+// Get Routes to select driver
+module.exports.getRouteToSelectDriver = function(origin, destination, direction, callback) {
+	Rou.find({
+		'route_status': 'ready', 
+		'origin.name': origin, 
+		'destination.name': destination, 
+		'current_seat': {$ne: 'full'},
+		'direction': direction
+	}, {'__v':0}, callback);
+}
+
 // Add new Route
 module.exports.addRoute = function(route, callback) {
 	Rou.create(route, callback);
@@ -109,6 +120,7 @@ module.exports.getRouteToMatch = function(origin, destination, callback) {
 		'current_seat': {$ne: 'full'}
 	}, {'__v':0}, callback);
 }
+
 
 
 
