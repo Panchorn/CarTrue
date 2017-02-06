@@ -1,4 +1,4 @@
-﻿- ทำ noti ตอนส่ง request (ทั้ง passenger และ driver)
+﻿﻿- ทำ noti ตอนส่ง request (ทั้ง passenger และ driver)
 - ทำ node ให้ส่ง noti จากการตอบรับของ driver กลับไปให้ passenger
 - (เสร็จแล้ว)ทำให้ตอน login เสร็จแล้วส่ง device_key เข้าไปเก็บใน db เอาไว้ใช้ทำ noti
 - สไลด์บาร์ข้างล่างตอน passenger เลือก driver
