@@ -54,7 +54,7 @@ app.get('/index', function (req, res) {
 app.get('/regtoken/id/:empid', function(req, res) {
     Emp.getRegToken(req.params.empid, function(err, data) {
         if (err) { console.error(err); }
-        else { console.log(data); res.json(data.employee.regtoken); 
+        else { console.log(data); res.json(data.employee.regtoken); }
     });
 });
 
