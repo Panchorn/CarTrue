@@ -28,7 +28,7 @@ const requestSchema = db.Mongoose.Schema({
 		default: "waiting"
 	},
 	note: { type: String },
-	timestamp: { type: Date },
+	timestamp:{ type: Date }
 }, {collection:'Requests'});
 
 //----------------------------------------------------------------------------
@@ -51,9 +51,14 @@ requestSchema.pre('save', function(next) {
 
 const Req = module.exports =  db.Connection.model('Requests', requestSchema);
 
+// Get the Request by request_id
+module.exports.getRequestByRequestId = function(requestid, callback) {
+	Req.find({'request_id': requestid}, {'_id':0}, callback);
+}
+
 // Get the Request by route_id
 module.exports.getRequestByRouteId = function(routeid, callback) {
-	Req.find({'route_id': routeid, 'req_status': 'accepted'}, {'_id':0}, callback);
+	Req.find({'route_id': routeid}, {'_id':0}, callback);
 }
 
 // Get to show in history (for passenger)
@@ -94,6 +99,7 @@ module.exports.updateStatusCancel = function(requestid, options, callback) {
 	var request = {$set:{'req_status': 'cancel'}};
 	Req.findOneAndUpdate(requestid, request, options, callback);
 }
+
 
 
 

@@ -27,8 +27,8 @@ const routeSchema = db.Mongoose.Schema({
 	note: { type: String },
 	route_status: { 
 		type: String, 
-		enum: ["ready", "please_wait","in_travel", "arrived", "cancel"], 
-		default: "please_wait" },
+		enum: ["ready", "in_travel", "arrived", "cancel"], 
+		default: "ready" },
 	timestamp:{ type: Date }
 }, {collection:'Routes'});
 
@@ -54,9 +54,7 @@ const Rou = module.exports =  db.Connection.model('Routes', routeSchema);
 
 // Get the Routes *(limit 10 documents)
 module.exports.getRouteByDriverId = function(driverid, callback) {
-	Rou.find({'driver_id': driverid}, 
-				{'_id':0,'route_id':1, 'date':1, 'origin':1, 'destination':1}, 
-				callback)//.limit(10);
+	Rou.find({'driver_id': driverid}, callback)//.limit(10);
 }
 
 // Get more detail of each Route
@@ -99,7 +97,7 @@ module.exports.updateTimestamp = function(routeid, options, callback) {
 // Update Route
 module.exports.updateRoute = function(routeid, route, options, callback) {
 	var query = {'route_id': routeid};
-	Rou.findOneAndUpdate(query, route, options , callback);
+	Rou.findOneAndUpdate(query, route, options, callback);
 }
 
 // Delete Route
@@ -120,6 +118,7 @@ module.exports.getRouteToMatch = function(origin, destination, callback) {
 		'current_seat': {$ne: 'full'}
 	}, {'__v':0}, callback);
 }
+
 
 
 

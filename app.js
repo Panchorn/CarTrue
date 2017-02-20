@@ -22,7 +22,7 @@ Rou = require('./client/models/routes');
 Req = require('./client/models/requests');
 Lan = require('./client/models/landmarks');
 Mat = require('./client/controllers/matching');
-Nor = require('./client/controllers/sendnorti');
+Nor = require('./client/controllers/sendnoti');
 
 //Connect to mongoose
 // mongoose.Promise = global.Promise;
@@ -51,8 +51,8 @@ app.get('/index', function (req, res) {
 });
 
 //get on regtoken by emp_id
-app.get('/regtoken/id/:empid', function(req, res) {
-    Emp.getRegToken(req.params.empid, function(err, data) {
+app.get('/regtoken/id/:empid', function (req, res) {
+    Emp.getRegToken(req.params.empid, function (err, data) {
         if (err) { console.error(err); }
         else { console.log(data); res.json(data.employee.regtoken); }
     });
@@ -127,7 +127,7 @@ app.post('/emp/login', function (req, res) {
     var emp = req.body;
     Emp.loginEmp(emp, function (data, err) {
         if (err) { console.error(err); }
-        else if (data === 0) { console.log('Somthing wrong, please try again'); res.json(data); }
+        else if (data === null) { console.log('Somthing wrong, please try again'); res.json(data); }
         else { console.log(data); res.json(data); }
     });
 });
@@ -215,6 +215,14 @@ app.delete('/route/removeroute/:routeid', function (req, res) {
 //----------------------------------------------------------------------------
 // for request only!!!
 //----------------------------------------------------------------------------
+
+//get requests by request_id
+app.get('/request/requestid/:requestid', function (req, res) {
+    Req.getRequestByRequestId(req.params.requestid, function (err, data) {
+        if (err) { console.error(err); }
+        else { console.log(data); res.json(data); }
+    });
+});
 
 //get requests that accepted of a route by route_id
 app.get('/request/routeid/:routeid', function (req, res) {
@@ -373,11 +381,25 @@ app.post('/matching', function (req, res) {
 // for send notification process!!!
 //----------------------------------------------------------------------------
 
-//sendnorti
+//sendnoti
 //client have to send 'driver_id' here!
-app.post('/norti', function (req, res) {
+app.post('/noti', function (req, res) {
     var request = req.body;
-    Nor.sendnorti(req.body.driverid,req.body.fname, function(result, err){
+    Nor.sendnoti(req.body.driverid,req.body.fname, function(result, err){
+        if (err) { 
+            console.error('err');
+        }
+        else { 
+            console.log('send succes');
+            res.send(result);
+        }
+    });
+});
+
+//client have to send 'passenger_id' here!
+app.post('/notitopass', function (req, res) {
+    var request = req.body;
+    Nor.sendnotitopass(req.body.passengerid,req.body.fname, function(result, err){
         if (err) { 
             console.error('err');
         }
