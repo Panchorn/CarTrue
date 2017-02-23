@@ -24,7 +24,7 @@ const requestSchema = db.Mongoose.Schema({
 	},
 	req_status:{ 
 		type: String,
-		enum: ["accepted","waiting","denied","timeout","cancel"],
+		enum: ["accepted", "waiting", "denied", "cancel"],
 		default: "waiting"
 	},
 	note: { type: String },
@@ -53,7 +53,7 @@ const Req = module.exports =  db.Connection.model('Requests', requestSchema);
 
 // Get the Request by request_id
 module.exports.getRequestByRequestId = function(requestid, callback) {
-	Req.find({'request_id': requestid}, {'_id':0}, callback);
+	Req.findOne({'request_id': requestid}, {'_id':0}, callback);
 }
 
 // Get the Request by route_id

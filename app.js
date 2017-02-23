@@ -250,7 +250,7 @@ app.post('/request/newrequest', function (req, res) {
                 console.log('updated timestamp');
             });
             console.log('Added request no.' + data.request_id); 
-            res.json('Added request no.' + data.request_id); 
+            res.json(data.request_id); 
         }
     });
 });
@@ -396,6 +396,7 @@ app.post('/noti', function (req, res) {
     });
 });
 
+//not use now
 //client have to send 'passenger_id' here!
 app.post('/notitopass', function (req, res) {
     var request = req.body;
@@ -407,6 +408,51 @@ app.post('/notitopass', function (req, res) {
             console.log('send succes');
             res.send(result);
         }
+    });
+});
+
+
+//----------------------------------------------------------------------------
+// for accept passenger only (from driver mode)!!!
+//----------------------------------------------------------------------------
+
+//update request status of request
+//send noti to passenger
+app.post('/request/acceptpassenger/:requestid', function (req, res) {
+    var requestid = req.params.requestid;
+    var request = req.body;
+
+    // console.log(request.req_status);
+    Req.getRequestByRequestId(requestid, function (err, data) {
+        if (err) { console.error(err); }
+        else { 
+            console.log(data); 
+            if (data.req_status == 'waiting') {
+                Req.updateRequest(requestid, {'req_status': request.req_status} , function(data, err){
+                    if (err) { console.error(err); res.send(err.toString()); }
+                    else { console.log(data); res.json(data); }
+                });
+                //send noti
+                Nor.sendnotitopass(request.passenger_id, request.fName, request.req_status, function(data, err){
+                    if (err) { console.error(err); res.send(err.toString()); }
+                    else { console.log(data); res.json(data); }
+                });
+            }
+            else {
+                console.log('Error, req_status is not \'waiting\''); 
+                res.json('Error, req_status is not \'waiting\'');
+            }
+        }
+    });
+});
+
+
+//increment current_seat by route_id
+app.get('/route/incrementseat/:routeid', function (req, res) {
+    var routeid = req.params.routeid;
+    Rou.incrementCurrentSeat(routeid, function(data, err){
+        if (err) { console.error(err); res.send(err.toString()); }
+        else { console.log(data); res.json(data); }
     });
 });
 

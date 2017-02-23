@@ -5,58 +5,58 @@ var fcm = new FCM(serverKey);
 Emp = require('../models/employees');
 
 
-module.exports.sendnoti = function(driverid,fname, callback) {
-        Emp.getEmpById(driverid, function (err, data) {
-            var message = { //this may vary according to the message type (single recipient, multicast, topic, etcetera)
-                    to: data.employee.regtoken,
-                priority: 'high',
-                contentAvailable: true,
-                    notification: {
-                            title: 'Hey ! ' + data.employee.fName, 
-                            body: fname + ' want to join your ride !!!',
-                        sound: "default"
-                            },
-                    data: {  //you can send only notification or only data(or include both)
-                            title: 'Hey ! ' + data.employee.fName, 
-                            body: 'someone want to join your ride !!!'
-                        }
-            };
-            fcm.send(message, function(err, response){
-                    if (err) {
-                        console.log("Something has gone wrong!");
-                    } else {
-                        console.log("Successfully sent with response: ", response);
-                    }
-                //callback(data.employee.regtoken);
-                callback(response);
-            });
+module.exports.sendnoti = function(driverid, fname, callback) {
+    Emp.getEmpById(driverid, function (err, data) {
+        var message = { //this may vary according to the message type (single recipient, multicast, topic, etcetera)
+            to: data.employee.regtoken,
+            priority: 'high',
+            contentAvailable: true,
+            notification: {
+                title: 'Hey ! ' + data.employee.fName, 
+                body: fname + ' want to join your ride !!!',
+                sound: "default"
+            },
+            data: {  //you can send only notification or only data(or include both)
+                title: 'Hey ! ' + data.employee.fName, 
+                body: 'someone want to join your ride !!!'
+            }
+        };
+        fcm.send(message, function(err, response){
+            if (err) {
+                console.log("Something has gone wrong!");
+            } else {
+                console.log("Successfully sent with response: ", response);
+            }
+            //callback(data.employee.regtoken);
+            callback(response);
         });
+    });
 }
 
-module.exports.sendnotitopass = function(passengerid,fname, callback) {
-        Emp.getEmpById(passengerid, function (err, data) {
-            var message = { //this may vary according to the message type (single recipient, multicast, topic, etcetera)
-                    to: data.employee.regtoken,
-                priority: 'high',
-                contentAvailable: true,
-                    notification: {
-                            title: 'Hey ! ' + data.employee.fName, 
-                            body: fname + ' accept your request !!!',
-                        sound: "default"
-                            },
-                    data: {  //you can send only notification or only data(or include both)
-                            title: 'Hey ! ' + data.employee.fName, 
-                            body: 'someone want to join your ride !!!'
-                        }
-            };
-            fcm.send(message, function(err, response){
-                    if (err) {
-                        console.log("Something has gone wrong!");
-                    } else {
-                        console.log("Successfully sent with response: ", response);
-                    }
-                //callback(data.employee.regtoken);
-                callback(response);
-            });
+module.exports.sendnotitopass = function(passengerid,fname,result, callback) {
+    Emp.getEmpById(passengerid, function (err, data) {
+        var message = { //this may vary according to the message type (single recipient, multicast, topic, etcetera)
+            to: data.employee.regtoken,
+            priority: 'high',
+            contentAvailable: true,
+            notification: {
+                title: 'Hey ! ' + data.employee.fName, 
+                body: fname +' '+result+ ' your request !!!',
+                sound: "default"
+            },
+            data: {  //you can send only notification or only data(or include both)
+                title: 'Hey ! ' + data.employee.fName, 
+                body: 'someone want to join your ride !!!'
+            }
+        };
+        fcm.send(message, function(err, response){
+                if (err) {
+                    console.log("Something has gone wrong!");
+                } else {
+                    console.log("Successfully sent with response: ", response);
+                }
+            //callback(data.employee.regtoken);
+            callback(response);
         });
+    });
 }

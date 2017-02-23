@@ -22,7 +22,7 @@ const routeSchema = db.Mongoose.Schema({
 		arrived:{ type: Date }
 	},
 	seat:{ type: String, required: true, enum: ["1","2","3"] },
-	current_seat:{ type: String, enum: ["empty","remain","full"], default: "empty" },
+	current_seat:{ type: Number, enum: [0, 1, 2, 3], default: 0 },
 	direction:{ type: String, required: true },
 	note: { type: String },
 	route_status: { 
@@ -78,7 +78,7 @@ module.exports.getRouteToSelectDriver = function(origin, destination, direction,
 		'route_status': 'ready', 
 		'origin.name': origin, 
 		'destination.name': destination, 
-		'current_seat': {$ne: 'full'},
+		'current_seat': {$ne: 3},
 		'direction': direction
 	}, {'__v':0}, callback);
 }
@@ -100,6 +100,21 @@ module.exports.updateRoute = function(routeid, route, options, callback) {
 	Rou.findOneAndUpdate(query, route, options, callback);
 }
 
+// Increase current_seat 1 (+1)
+module.exports.incrementCurrentSeat = function(routeid, callback) {
+	var query = {'route_id': routeid}
+	Rou.findOne(query, {'current_seat':1, 'seat':1}, function(err, data) {	
+		if (data.current_seat < data.seat) {
+			Rou.findOneAndUpdate(query, {$inc: {'current_seat' :1} }, {new: true}, function(err, data) {
+				callback(data);
+			});
+		}
+		else {
+			callback('full');
+		}
+	});
+}
+
 // Delete Route
 module.exports.removeRoute = function(routeid, callback) {
 	Rou.remove({'route_id': routeid}, callback);
@@ -115,7 +130,7 @@ module.exports.getRouteToMatch = function(origin, destination, callback) {
 		'route_status': 'ready', 
 		'origin.name': origin, 
 		'destination.name': destination, 
-		'current_seat': {$ne: 'full'}
+		'current_seat': {$ne: 3}
 	}, {'__v':0}, callback);
 }
 
