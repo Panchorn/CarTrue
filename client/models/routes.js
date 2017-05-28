@@ -8,20 +8,18 @@ const routeSchema = db.Mongoose.Schema({
 	origin:{
 		name:{ type: String, required: true },
 		lat:{ type: String, required: true },
-		lng:{ type: String, required: true },
-		addr:{ type: String }
+		lng:{ type: String, required: true }
 	},
 	destination:{
 		name:{ type: String, required: true },
 		lat:{ type: String, required: true },
-		lng:{ type: String, required: true },
-		addr:{ type: String }
+		lng:{ type: String, required: true }
 	},
 	date:{
 		start:{ type: Date, required: true },
 		arrived:{ type: Date }
 	},
-	seat:{ type: String, required: true, enum: ["1","2","3"] },
+	seat:{ type: Number, required: true, enum: ["1","2","3"] },
 	current_seat:{ type: Number, enum: [0, 1, 2, 3], default: 0 },
 	direction:{ type: String, required: true },
 	note: { type: String },
@@ -29,6 +27,14 @@ const routeSchema = db.Mongoose.Schema({
 		type: String, 
 		enum: ["ready", "in_travel", "arrived", "cancel"], 
 		default: "ready" },
+	rules: {
+		maleAllow: { type: Boolean, default: true },
+		femaleAllow: { type: Boolean, default: true },
+		foodAllow: { type: Boolean, default: false },
+		petAllow: { type: Boolean, default: false },
+		babyAllow: { type: Boolean, default: false },
+		smokeAllow: { type: Boolean, default: false }
+	},
 	timestamp:{ type: Date }
 }, {collection:'Routes'});
 
@@ -52,6 +58,11 @@ routeSchema.pre('save', function(next) {
 
 const Rou = module.exports =  db.Connection.model('Routes', routeSchema);
 
+// Get all Routes 
+module.exports.getAllRoutes = function(callback) {
+	Rou.find({}, {'_id':0, '__v':0}, callback)//.limit(10);
+}
+
 // Get the Routes *(limit 10 documents)
 module.exports.getRouteByDriverId = function(driverid, callback) {
 	Rou.find({'driver_id': driverid}, callback)//.limit(10);
@@ -73,15 +84,42 @@ module.exports.getRouteForHistoryD = function(driverid, callback) {
 }
 
 // Get Routes to select driver
-module.exports.getRouteToSelectDriver = function(origin, destination, direction, callback) {
-	Rou.find({
-		'route_status': 'ready', 
-		'origin.name': origin, 
-		'destination.name': destination, 
-		'current_seat': {$ne: 3},
-		'direction': direction
-	}, {'__v':0}, callback);
+module.exports.getRouteToSelectDriver = function(origin, destination, direction, gender, time, callback) {
+	// gender is sex of passenger
+	if (gender === 'male') {
+		Rou.find({
+			'route_status': 'ready', 
+			'origin.name': origin, 
+			'destination.name': destination,
+			'rules.maleAllow': true,
+			'date.start': { '$gte': time },
+			$where:  'this.seat > this.current_seat',
+			'direction': direction
+		}, {'__v':0}, callback);
+	}
+	else if (gender === 'female') {
+		Rou.find({
+			'route_status': 'ready', 
+			'origin.name': origin, 
+			'destination.name': destination,
+			'rules.femaleAllow': true,
+			'date.start': { '$gte': time },
+			$where:  'this.seat > this.current_seat',
+			'direction': direction
+		}, {'__v':0}, callback);
+	}
 }
+// not use (old)
+// // Get Routes to select driver
+// module.exports.getRouteToSelectDriver = function(origin, destination, direction, callback) {
+// 	Rou.find({
+// 		'route_status': 'ready', 
+// 		'origin.name': origin, 
+// 		'destination.name': destination, 
+// 		$where:  'this.seat > this.current_seat',
+// 		'direction': direction
+// 	}, {'__v':0}, callback);
+// }
 
 // Add new Route
 module.exports.addRoute = function(route, callback) {
@@ -105,12 +143,25 @@ module.exports.incrementCurrentSeat = function(routeid, callback) {
 	var query = {'route_id': routeid}
 	Rou.findOne(query, {'current_seat':1, 'seat':1}, function(err, data) {	
 		if (data.current_seat < data.seat) {
-			Rou.findOneAndUpdate(query, {$inc: {'current_seat' :1} }, {new: true}, function(err, data) {
+			Rou.findOneAndUpdate(query, {$inc: {'current_seat' : 1} }, {new: true}, function(err, data) {
 				callback(data);
 			});
 		}
 		else {
 			callback('full');
+		}
+	});
+}
+
+// Decrease current_seat 1 (-1)
+module.exports.decrementCurrentSeat = function(routeid, callback) {
+	var query = {'route_id': routeid}
+	Rou.findOne(query, {'current_seat':1, 'seat':1}, function(err, data) {	
+		if (data.current_seat > 0) {
+			Rou.findOneAndUpdate(query, {$inc: {'current_seat' : -1} }, {new: true}, callback);
+		}
+		else {
+			callback('empty');
 		}
 	});
 }
@@ -125,13 +176,28 @@ module.exports.removeRoute = function(routeid, callback) {
 //----------------------------------------------------------------------------
 
 // Get the Routes
-module.exports.getRouteToMatch = function(origin, destination, callback) {
-	Rou.find({
-		'route_status': 'ready', 
-		'origin.name': origin, 
-		'destination.name': destination, 
-		'current_seat': {$ne: 3}
-	}, {'__v':0}, callback);
+module.exports.getRouteToMatch = function(origin, destination, gender, time, callback) {
+	// gender is sex of passenger
+	if (gender === 'male') {
+		Rou.find({
+			'route_status': 'ready', 
+			'origin.name': origin, 
+			'destination.name': destination, 
+			'rules.maleAllow': true,
+			'date.start': { '$gte': time },
+			$where:  'this.seat > this.current_seat'  
+		}, {'__v':0}, callback);
+	}
+	else if (gender === 'female') {
+		Rou.find({
+			'route_status': 'ready', 
+			'origin.name': origin, 
+			'destination.name': destination, 
+			'rules.femaleAllow': true,
+			'date.start': { '$gte': time },
+			$where:  'this.seat > this.current_seat'  
+		}, {'__v':0}, callback);
+	}
 }
 
 

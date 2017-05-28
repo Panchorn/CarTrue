@@ -6,17 +6,21 @@
   "scripts": {
     "start": "nodemon ./bin/www"
   },
-  "dependencies":{
-    "express":"*",
-    "body-parser":"*",
-    "mongoose":"*",
-    "mongojs":"*",    
+  "dependencies": {
+    "body-parser": "*",
+    "debug": "*",
+    "express": "*",
     "fcm-node": "^1.0.16",
-    "debug": "*"
+    "mongojs": "*",
+    "mongoose": "*",
+    "multer": "^1.3.0"
   },
   "keywords": [
     "cartrue"
   ],
   "author": "True & SWU",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
 }

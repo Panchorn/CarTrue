@@ -9,25 +9,25 @@ const requestSchema = db.Mongoose.Schema({
 	origin:{
 		name:{ type: String, required: true },
 		lat:{ type: String, required: true },
-		lng:{ type: String, required: true },
-		addr:{ type: String }
+		lng:{ type: String, required: true }
 	},
 	destination:{
 		name:{ type: String, required: true },
 		lat:{ type: String, required: true },
-		lng:{ type: String, required: true },
-		addr:{ type: String }
+		lng:{ type: String, required: true }
 	},
-	date:{
+	date:{		
+		time:{ type: Date },
 		get_in:{ type: Date },
 		get_out:{ type: Date }
 	},
 	req_status:{ 
 		type: String,
-		enum: ["accepted", "waiting", "denied", "cancel"],
+		enum: ["waiting", "accepted", "denied", "in_travel", "cancel", "arrived"],
 		default: "waiting"
 	},
 	note: { type: String },
+	req_expire:{ type: Date },
 	timestamp:{ type: Date }
 }, {collection:'Requests'});
 
@@ -51,6 +51,11 @@ requestSchema.pre('save', function(next) {
 
 const Req = module.exports =  db.Connection.model('Requests', requestSchema);
 
+// Get all Requests
+module.exports.getAllRequests = function(callback) {
+	Req.find({}, {'_id':0, '__v':0}, callback)//.limit(10);
+}
+
 // Get the Request by request_id
 module.exports.getRequestByRequestId = function(requestid, callback) {
 	Req.findOne({'request_id': requestid}, {'_id':0}, callback);
@@ -61,9 +66,25 @@ module.exports.getRequestByRouteId = function(routeid, callback) {
 	Req.find({'route_id': routeid}, {'_id':0}, callback);
 }
 
+// Get the Request by passenger_id
+module.exports.getRequestByPassengerId = function(passengerid, callback) {
+	Req.find({'passenger_id': passengerid, 'req_status': {$in: ['waiting', 'accepted', 'in_travel']}}, {'_id':0}, callback);
+}
+
+// Get the Request by route_id and req_status == 'arrived'
+module.exports.getRequestByRouteIdAndArrived = function(routeid, callback) {
+	Req.find({'route_id': routeid, 'req_status': 'arrived'}, {'_id':0}, callback);
+}
+
+// Get the Request by route_id and req_status == 'waiting', 'accepted'
+module.exports.getRequestByRouteIdAndStatus = function(routeid, callback) {
+	Req.find({'route_id': routeid, 'req_status': {$in: ['waiting', 'accepted', 'cancel','in_travel']}}, 
+		{'_id':0}, callback);
+}
+
 // Get to show in history (for passenger)
-module.exports.getRouteForHistoryP = function(passengerid, callback) {
-	Req.find({'req_status': 'accepted', 'passenger_id': passengerid}, {'_id': 0, '__v': 0}, 
+module.exports.getRequestForHistoryP = function(passengerid, callback) {
+	Req.find({'req_status': 'arrived', 'passenger_id': passengerid}, {'_id': 0, '__v': 0}, 
 				callback);
 	//	Req.find({$or: [{'req_status': 'denied'}, {'req_status': 'accepted'}], 
 				// 'passenger_id': passengerid}, 
@@ -79,7 +100,7 @@ module.exports.addRequest = function(request, callback) {
 // Update Timestamp after insert new request
 module.exports.updateTimestamp = function(requestid, options, callback) {
 	var query = {'request_id': requestid};
-	Req.findOneAndUpdate(query, {'timestamp': new Date()}, options , callback);
+	Req.findOneAndUpdate(query, {'timestamp': new Date(), 'req_expire': (new Date()).getTime() + 60000}, options , callback);
 }
 
 // Update Request

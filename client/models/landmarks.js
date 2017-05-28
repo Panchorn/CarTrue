@@ -6,8 +6,7 @@ const landmarkSchema = db.Mongoose.Schema({
         land_id: { type: String, index: { unique: true } },
         name: { type: String, required: true },
         lat: { type: String, required: true },
-        lng: { type: String, required: true },
-        addr: { type: String }
+        lng: { type: String, required: true }
 }, {collection:'Landmarks'});
 
 //----------------------------------------------------------------------------
@@ -32,8 +31,8 @@ landmarkSchema.pre('save', function(next) {
 const Lan = module.exports =  db.Connection.model('Landmarks', landmarkSchema);
 
 // Get all landmarks
-module.exports.getAllLandmark = function( callback) {
-        Lan.find({}, {'_id':0, '__v':0}, callback);
+module.exports.getAllLandmark = function(callback) {
+        Lan.find({}, {'_id':0, '__v':0}, callback).sort({name: 'asc'});
 }
 
 // Get landmark by ID
@@ -43,7 +42,7 @@ module.exports.getLandmarkById = function(landid, callback) {
 
 // Get landmarks by name
 module.exports.getLandmarkByName = function(landname, callback) {
-        Lan.find({'name': new RegExp(landname)}, {'_id':0, '__v':0}, callback);
+        Lan.find({'name': new RegExp(landname, 'i')}, {'_id':0, '__v':0}, callback); // /bTs/i
 }
 
 // Insert landmark
