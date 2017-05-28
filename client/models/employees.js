@@ -1,6 +1,5 @@
 var db = require('./connection.js');
 counter = require('./counters');
-var DOC = null;
 
 //Employees Schema
 const employeeSchema = db.Mongoose.Schema({ 
@@ -16,7 +15,7 @@ const employeeSchema = db.Mongoose.Schema({
 		phone:{ type: String, required: true },
 		department:{ type: String, required: true },
 		pic:{ type: String },
-		regtoken: { type: String },
+		regtoken: { type: String, required: true },
 		login:{ type: Boolean, default: false }
 	},
 	car: {
@@ -24,21 +23,7 @@ const employeeSchema = db.Mongoose.Schema({
 		model:{ type: String },
 		color:{ type: String },
 		license:{ type: String },
-		register:{ type: Boolean, default: false }
-	},
-	favourite: {
-		cartoon:{ type: Boolean, default: false },
-		food:{ type: Boolean, default: false },
-		game:{ type: Boolean, default: false },
-		movie:{ type: Boolean, default: false },
-		shopping:{ type: Boolean, default: false },
-		sport:{ type: Boolean, default: false },
-		technology:{ type: Boolean, default: false },
-		travel:{ type: Boolean, default: false },
-		selected:{ type: Boolean, default: false }
-	},
-	score: {
-		 type: Number, default: 0 
+		register:{ type:Boolean, default: false }
 	}
 }, {collection:'Employees'});
 
@@ -48,7 +33,6 @@ const employeeSchema = db.Mongoose.Schema({
 
 employeeSchema.pre('save', function(next) {
     var doc = this;
-    DOC = doc
     counter.findByIdAndUpdate({_id: 'employee.emp_id'}, {$inc: { seq: 1}}, {"upsert": true, "new": true} , function(error, counter)   {
         if(error)
             return next(error);
@@ -63,19 +47,6 @@ employeeSchema.pre('save', function(next) {
 
 const Emp = module.exports =  db.Connection.model('Employees', employeeSchema);
 
-//----------------------------------------------------------------------------
-// for decrement emp_id by 1 (-1)
-//----------------------------------------------------------------------------
-
-module.exports.decreaseEmpIdByOne = function() {
-    counter.findByIdAndUpdate({_id: 'employee.emp_id'}, {$inc: { seq: -1}}, {"upsert": true, "new": true} , function(error, counter)   {
-        if(error)
-            return next(error);
-        console.log(DOC)
-        DOC.employee.emp_id = counter.seq;
-    });
-}
-
 // Get all Employee
 module.exports.getEmps = function(callback, limit) {
 	Emp.find({}, {'_id':0, '__v':0}, callback).limit(limit);
@@ -88,7 +59,7 @@ module.exports.getEmpById = function(empid, callback) {
 
 // Get Employee by name
 module.exports.getEmpByName = function(fname, callback) {
-	Emp.find({'employee.fName': new RegExp(fname, 'i')}, {'_id':0, '__v':0}, callback);
+	Emp.find({'employee.fName': new RegExp(fname)}, {'_id':0, '__v':0}, callback);
 }
 
 // Add Employee
@@ -100,15 +71,6 @@ module.exports.addEmp = function(emp, callback) {
 module.exports.updateEmp = function(empid, emp, options, callback) {
 	var query = {'employee.emp_id': empid};
 	Emp.findOneAndUpdate(query, emp, options, callback);
-}
-
-// Update new score
-module.exports.updateNewScore = function(empid, score, options, callback) {
-	// console.log('score : ' + score);
-	// console.log('emp_id : ' + empid);
-	var query = {'employee.emp_id': empid};
-	var addScore = {$inc: {'score' : score}};
-	Emp.findOneAndUpdate(query, addScore, options, callback);
 }
 
 // Delete Employee
