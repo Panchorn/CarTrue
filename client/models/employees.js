@@ -15,7 +15,7 @@ const employeeSchema = db.Mongoose.Schema({
 		phone:{ type: String, required: true },
 		department:{ type: String, required: true },
 		pic:{ type: String },
-		regtoken: { type: String, required: true },
+		regtoken: { type: String },
 		login:{ type: Boolean, default: false }
 	},
 	car: {
@@ -23,7 +23,21 @@ const employeeSchema = db.Mongoose.Schema({
 		model:{ type: String },
 		color:{ type: String },
 		license:{ type: String },
-		register:{ type:Boolean, default: false }
+		register:{ type: Boolean, default: false }
+	},
+	favourite: {
+		cartoon:{ type: Boolean, default: false },
+		food:{ type: Boolean, default: false },
+		game:{ type: Boolean, default: false },
+		movie:{ type: Boolean, default: false },
+		shopping:{ type: Boolean, default: false },
+		sport:{ type: Boolean, default: false },
+		technology:{ type: Boolean, default: false },
+		travel:{ type: Boolean, default: false },
+		selected:{ type: Boolean, default: false }
+	},
+	score: {
+		 type: Number, default: 0 
 	}
 }, {collection:'Employees'});
 
@@ -33,6 +47,7 @@ const employeeSchema = db.Mongoose.Schema({
 
 employeeSchema.pre('save', function(next) {
     var doc = this;
+    DOC = doc
     counter.findByIdAndUpdate({_id: 'employee.emp_id'}, {$inc: { seq: 1}}, {"upsert": true, "new": true} , function(error, counter)   {
         if(error)
             return next(error);
@@ -47,6 +62,19 @@ employeeSchema.pre('save', function(next) {
 
 const Emp = module.exports =  db.Connection.model('Employees', employeeSchema);
 
+//----------------------------------------------------------------------------
+// for decrement emp_id by 1 (-1)
+//----------------------------------------------------------------------------
+
+module.exports.decreaseEmpIdByOne = function() {
+    counter.findByIdAndUpdate({_id: 'employee.emp_id'}, {$inc: { seq: -1}}, {"upsert": true, "new": true} , function(error, counter)   {
+        if(error)
+            return next(error);
+        console.log(DOC)
+        DOC.employee.emp_id = counter.seq;
+    });
+}
+
 // Get all Employee
 module.exports.getEmps = function(callback, limit) {
 	Emp.find({}, {'_id':0, '__v':0}, callback).limit(limit);
@@ -59,7 +87,7 @@ module.exports.getEmpById = function(empid, callback) {
 
 // Get Employee by name
 module.exports.getEmpByName = function(fname, callback) {
-	Emp.find({'employee.fName': new RegExp(fname)}, {'_id':0, '__v':0}, callback);
+	Emp.find({'employee.fName': new RegExp(fname, 'i')}, {'_id':0, '__v':0}, callback);
 }
 
 // Add Employee
@@ -71,6 +99,13 @@ module.exports.addEmp = function(emp, callback) {
 module.exports.updateEmp = function(empid, emp, options, callback) {
 	var query = {'employee.emp_id': empid};
 	Emp.findOneAndUpdate(query, emp, options, callback);
+}
+
+// Update new score
+module.exports.updateNewScore = function(empid, score, options, callback) {
+	var query = {'employee.emp_id': empid};
+	var addScore = {$inc: {'score' : score}};
+	Emp.findOneAndUpdate(query, addScore, options, callback);
 }
 
 // Delete Employee
@@ -102,14 +137,15 @@ module.exports.loginEmp = function(emp, callback) {
 
 
 
+
 //-------------------------- data example---------------------------
 // /* 1 */
 // {
 //     "_id" : ObjectId("585c036a06eeb71eb8b0c742"),
 //     "employee" : {
 //         "emp_id" : "1",
-//         "email" : "chavP@gmail.com",
-//         "password" : "12345678",
+//         "password" : "ttttt",
+//         "email" : "test@t.t",
 //         "fName" : "Parinya",
 //         "lName" : "Chavanasuvarngull",
 //         "sName" : "ChavP",
@@ -117,17 +153,30 @@ module.exports.loginEmp = function(emp, callback) {
 //         "birth" : ISODate("1990-08-22T03:00:00.000Z"),
 //         "phone" : "0800001234",
 //         "department" : "development",
-//         "pic" : "http://47.88.241.73/CarTrue/images/profile/1.jpg",
-//         "login" : false
+//         "pic" : "http://61.90.233.80/cartrue/images/profile/2017/1.jpg",
+//         "login" : true,
+//         "regtoken" : "f3ENtEqQ3Y4:APA91bE733BSXbX-kseF0VF4Y1_krEIvp6Gz5bnJShMD0ILy0Jpeh49qhIocSKad6dcQ_Mlvqm_kTvPenfiqPSrNvhHeibW5KWK9dGemtbwGWCczAhyT11LMySPGtRkxW5IIRs0jcWpA"
 //     },
 //     "car" : {
-//         "number" : "กข1234",
-//         "model" : "Civic",
+//         "register" : true,
+//         "license" : "a bvcfg",
 //         "color" : "red",
-//         "license" : "49005678",
-//         "register" : true
+//         "model" : "ToYoBo1",
+//         "number" : "1234"
 //     },
-//     "__v" : 0
+//     "favourite" : {
+//         "cartoon" : true,
+//         "food" : true,
+//         "game" : false,
+//         "movie" : false,
+//         "sport" : true,
+//         "technology" : false,
+//         "travel" : true,
+//         "shopping" : true,
+//         "selected" : true
+//     },
+//     "__v" : 0,
+//     "score" : 90
 // }
 
 // /* 2 */
@@ -135,27 +184,39 @@ module.exports.loginEmp = function(emp, callback) {
 //     "_id" : ObjectId("585c045506eeb71eb8b0c743"),
 //     "employee" : {
 //         "emp_id" : "2",
-//         "email" : "nonpcn@gmail.com",
-//         "password" : "admin",
+//         "password" : "nnnnn",
+//         "email" : "non@n.n",
 //         "fName" : "Panchorn",
 //         "lName" : "Lertvipada",
 //         "sName" : "Non",
 //         "gender" : "male",
 //         "birth" : ISODate("1995-04-02T19:00:00.000Z"),
-//         "phone" : "0923122231",
+//         "phone" : "0839259127",
 //         "department" : "Human Resource",
-//         "pic" : "http://47.88.241.73/CarTrue/images/profile/2.jpg",
-//         "login" : false,
-//         "regtoken" : "da-ufnTBm28:APA91bHH8a3uNaYADyxheWmEOea2_6cz8qZ2r1TFUbufD-JETqkn0ysNOr3uvlKLzprwt5z5yg6t3VY8_CeO9Wlvy2rUyKNcfAPiX5Qa_WwvVuJGdFI5FSGJuG9vSP3NxrmgB1FMIZbV"
+//         "pic" : "http://61.90.233.80/cartrue/images/profile/2017/2.jpg",
+//         "login" : true,
+//         "regtoken" : "ddYaq0tuKuc:APA91bGHZYmVfX_bkyPzql_ONQyBllIk_JzL4y0HVrkNV1syLO3dNjzQegX9n8-tXfq59fsR7taOf8nHb8fA7XLr6yUnVo9wBstcNES1gEf8oA47DLn0bwE7SoT894Y6GFiux9gdC85_"
 //     },
 //     "car" : {
-//         "number" : "aa1221",
-//         "model" : "Yaris",
-//         "color" : "black",
+//         "register" : true,
 //         "license" : "49001111",
-//         "register" : true
+//         "color" : "black",
+//         "model" : "Yaris",
+//         "number" : "ac5566"
 //     },
-//     "__v" : 0
+//     "__v" : 0,
+//     "favourite" : {
+//         "cartoon" : true,
+//         "game" : true,
+//         "food" : true,
+//         "movie" : true,
+//         "shopping" : true,
+//         "sport" : true,
+//         "technology" : false,
+//         "travel" : true,
+//         "selected" : true
+//     },
+//     "score" : 78.0
 // }
 
 // /* 3 */
@@ -163,131 +224,37 @@ module.exports.loginEmp = function(emp, callback) {
 //     "_id" : ObjectId("585c04d506eeb71eb8b0c744"),
 //     "employee" : {
 //         "emp_id" : "3",
-//         "email" : "nsunday@gmail.com",
-//         "password" : "root",
+//         "email" : "n@n.n",
+//         "password" : "nnnnn",
 //         "fName" : "Non",
 //         "lName" : "Sunday",
 //         "sName" : "Non",
 //         "gender" : "male",
 //         "birth" : ISODate("1993-07-09T22:30:00.000Z"),
 //         "phone" : "0871239870",
+//         "pic" : "http://61.90.233.80/cartrue/images/profile/2017/3.jpg",
 //         "department" : "Human Resource",
-//         "pic" : "http://47.88.241.73/CarTrue/images/profile/3.jpg",
-//         "login" : false
+//         "login" : true,
+//         "regtoken" : "e17FOe7nIXk:APA91bGnqL9jpWXRHOxx9XxqnSeCzhhNayWSqFuYpvPTWAvsZS5-q5if0qTSqh_zZflyJ7kvvDiTG7TxA0jAzDzm7gFraC_voyqksTI0wMJZijDMRizODTADQwRMslgEFstahafsv2Zx"
 //     },
 //     "car" : {
-//         "number" : "ขข3211",
+//         "number" : "bb3211",
 //         "model" : "z200",
 //         "color" : "white",
 //         "license" : "49008888",
 //         "register" : true
 //     },
-//     "__v" : 0
-// }
-
-// /* 4 */
-// {
-//     "_id" : ObjectId("585c04ef06eeb71eb8b0c745"),
-//     "employee" : {
-//         "emp_id" : "4",
-//         "email" : "nrohcnap@gmail.com",
-//         "password" : "naprel",
-//         "fName" : "Nrohcnap",
-//         "lName" : "Adapivtrel",
-//         "sName" : "Nap",
-//         "gender" : "female",
-//         "phone" : "021139887",
-//         "department" : "Development",
-//         "pic" : "http://47.88.241.73/CarTrue/images/profile/4.jpg",
-//         "login" : false
+//     "__v" : 0,
+//     "favourite" : {
+//         "cartoon" : true,
+//         "food" : true,
+//         "game" : true,
+//         "movie" : true,
+//         "shopping" : true,
+//         "sport" : true,
+//         "technology" : true,
+//         "travel" : true,
+//         "selected" : true
 //     },
-//     "car" : {
-//         "number" : "พพ3499",
-//         "model" : "Altis",
-//         "color" : "black",
-//         "license" : "49005577",
-//         "register" : true
-//     },
-//     "__v" : 0
-// }
-
-// /* 5 */
-// {
-//     "_id" : ObjectId("585c051c06eeb71eb8b0c746"),
-//     "employee" : {
-//         "regtoken" : "c_Gxxh0PyIY:APA91bHvholvYmn_pUXlo4UpYNhlPs-7lscDhBSDUCw8UYf-a8TjNoN_HUb_tpG3SUR_f4_mmE2eos5Sfzlaix0g1Otl-aUL3U-QavO-vzr9dgf2rrltZ_2oRRD6kPAl67myUs2Kaxvv",
-//         "login" : true,
-//         "pic" : "http://47.88.241.73/CarTrue/images/profile/5.jpg",
-//         "department" : "System Analysis",
-//         "phone" : "089752214",
-//         "gender" : "male",
-//         "sName" : "JW",
-//         "lName" : "Winson",
-//         "fName" : "John",
-//         "password" : "12345678",
-//         "email" : "winsonjw@gmail.com",
-//         "emp_id" : "5"
-//     },
-//     "car" : {
-//         "register" : true,
-//         "license" : "1234",
-//         "number" : "test1234",
-//         "model" : "test",
-//         "color" : "test"
-//     },
-//     "__v" : 0
-// }
-
-// /* 6 */
-// {
-//     "_id" : ObjectId("585c052e06eeb71eb8b0c747"),
-//     "employee" : {
-//         "regtoken" : "e0ZTn741fts:APA91bG4KjLQc1FTTnhy6RcDNvvMJt7sQ_0lIIYM6sPxMCR0WkYgftX5oWYQDXDkrikIeUiXx68sCvguh7FvYzPcEz8Q90SxEqs0I4bUef6CN_I13D7HbShaL9V48u2JeETddieNbf9X",
-//         "login" : true,
-//         "pic" : "http://47.88.241.73/CarTrue/images/profile/6.jpg",
-//         "department" : "IT",
-//         "phone" : "0899999999",
-//         "gender" : "male",
-//         "sName" : "Ossas",
-//         "lName" : "msn",
-//         "fName" : "js",
-//         "password" : "12345",
-//         "email" : "js@msn.com",
-//         "emp_id" : "6"
-//     },
-//     "car" : {
-//         "register" : true,
-//         "license" : "12tejgduwmdn",
-//         "color" : "Gold",
-//         "model" : "sl123",
-//         "number" : "Saleng"
-//     },
-//     "__v" : 0
-// }
-
-// /* 7 */
-// {
-//     "_id" : ObjectId("585d39473283781bb4563e3d"),
-//     "employee" : {
-//         "regtoken" : "ew6uiG-9zZs:APA91bGkm2-RsyRzy7TpG_rUd6LaofRU7bVxLRLAdC-JFg2mj1hplBSp0tdkjeBSuE4L0I6Nsc2WAALSzrVEBgOsyQtUkf6BId-06vRKiUScn5VctIj0WWasuLjeR0v4CrqhetFU_wdY",
-//         "login" : true,
-//         "pic" : "http://47.88.241.73/CarTrue/images/profile/7.jpg",
-//         "department" : "IT",
-//         "phone" : "0899999999",
-//         "gender" : "male",
-//         "sName" : "Ossas",
-//         "lName" : "handsome",
-//         "fName" : "tester",
-//         "password" : "mmmmm",
-//         "email" : "m@m.m",
-//         "emp_id" : "7"
-//     },
-//     "car" : {
-//         "register" : true,
-//         "license" : "asdsadasdsadas",
-//         "color" : "blue",
-//         "model" : "cam",
-//         "number" : "aa9999"
-//     },
-//     "__v" : 0
+//     "score" : 41
 // }

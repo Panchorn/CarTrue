@@ -9,25 +9,25 @@ const requestSchema = db.Mongoose.Schema({
 	origin:{
 		name:{ type: String, required: true },
 		lat:{ type: String, required: true },
-		lng:{ type: String, required: true },
-		addr:{ type: String }
+		lng:{ type: String, required: true }
 	},
 	destination:{
 		name:{ type: String, required: true },
 		lat:{ type: String, required: true },
-		lng:{ type: String, required: true },
-		addr:{ type: String }
+		lng:{ type: String, required: true }
 	},
-	date:{
+	date:{		
+		time:{ type: Date },
 		get_in:{ type: Date },
 		get_out:{ type: Date }
 	},
 	req_status:{ 
 		type: String,
-		enum: ["accepted", "waiting", "denied", "cancel"],
+		enum: ["waiting", "accepted", "denied", "in_travel", "cancel", "arrived"],
 		default: "waiting"
 	},
 	note: { type: String },
+	req_expire:{ type: Date },
 	timestamp:{ type: Date }
 }, {collection:'Requests'});
 
@@ -51,6 +51,11 @@ requestSchema.pre('save', function(next) {
 
 const Req = module.exports =  db.Connection.model('Requests', requestSchema);
 
+// Get all Requests
+module.exports.getAllRequests = function(callback) {
+	Req.find({}, {'_id':0, '__v':0}, callback)//.limit(10);
+}
+
 // Get the Request by request_id
 module.exports.getRequestByRequestId = function(requestid, callback) {
 	Req.findOne({'request_id': requestid}, {'_id':0}, callback);
@@ -61,10 +66,26 @@ module.exports.getRequestByRouteId = function(routeid, callback) {
 	Req.find({'route_id': routeid}, {'_id':0}, callback);
 }
 
+// Get the Request by passenger_id
+module.exports.getRequestByPassengerId = function(passengerid, callback) {
+	Req.find({'passenger_id': passengerid, 'req_status': {$in: ['waiting', 'accepted', 'in_travel']}}, {'_id':0}, callback);
+}
+
+// Get the Request by route_id and req_status == 'arrived'
+module.exports.getRequestByRouteIdAndArrived = function(routeid, callback) {
+	Req.find({'route_id': routeid, 'req_status': 'arrived'}, {'_id':0}, callback);
+}
+
+// Get the Request by route_id and req_status == 'waiting', 'accepted'
+module.exports.getRequestByRouteIdAndStatus = function(routeid, callback) {
+	Req.find({'route_id': routeid, 'req_status': {$in: ['waiting', 'accepted', 'cancel','in_travel']}}, 
+		{'_id':0}, callback);
+}
+
 // Get to show in history (for passenger)
-module.exports.getRouteForHistoryP = function(passengerid, callback) {
-	Req.find({'req_status': 'accepted', 'passenger_id': passengerid}, {'_id': 0, '__v': 0}, 
-				callback);
+module.exports.getRequestForHistoryP = function(passengerid, callback) {
+	Req.find({'req_status': 'arrived', 'passenger_id': passengerid}, {'_id': 0, '__v': 0}, 
+				callback).sort({'date.get_in': 'desc'});
 	//	Req.find({$or: [{'req_status': 'denied'}, {'req_status': 'accepted'}], 
 				// 'passenger_id': passengerid}, 
 				// {'_id': 0, '__v': 0}, 
@@ -79,7 +100,7 @@ module.exports.addRequest = function(request, callback) {
 // Update Timestamp after insert new request
 module.exports.updateTimestamp = function(requestid, options, callback) {
 	var query = {'request_id': requestid};
-	Req.findOneAndUpdate(query, {'timestamp': new Date()}, options , callback);
+	Req.findOneAndUpdate(query, {'timestamp': new Date(), 'req_expire': (new Date()).getTime() + 60000}, options , callback);
 }
 
 // Update Request
@@ -101,254 +122,139 @@ module.exports.updateStatusCancel = function(requestid, options, callback) {
 }
 
 
-
-
-
 //-------------------------- data example---------------------------
 // /* 1 */
 // {
-//     "_id" : ObjectId("585e4366e27725c2b38f99bc"),
-//     "request_id" : "1",
-//     "route_id" : "1",
-//     "passenger_id" : "5",
-//     "origin" : {
-//         "name" : "Bts onnut",
-//         "lat" : "13.7055818",
-//         "lng" : "100.5988887",
-//         "addr" : "prakanong sukhumvit bkk"
+//     "_id" : ObjectId("592c48511ca221a1bf1a6e07"),
+//     "request_id" : "801",
+//     "route_id" : "595",
+//     "passenger_id" : "4",
+//     "note" : "",
+//     "req_status" : "cancel",
+//     "date" : {
+//         "time" : ISODate("2017-05-29T16:11:00.000Z")
 //     },
 //     "destination" : {
-//         "name" : "SWU",
+//         "name" : "Fortune Town",
+//         "lat" : "13.75762",
+//         "lng" : "100.5648"
+//     },
+//     "origin" : {
+//         "name" : "Srinakharinwirot University",
 //         "lat" : "13.7454649",
-//         "lng" : "100.5631804",
-//         "addr" : "sukhumvit23 bkk"
+//         "lng" : "100.5631804"
 //     },
-//     "date" : {
-//         "get_in" : ISODate("2016-12-12T16:30:00.000Z"),
-//         "get_out" : ISODate("2016-12-12T17:50:00.000Z")
-//     },
-//     "req_status" : "accepted",
-//     "note" : "wear a white shirt"
+//     "__v" : 0,
+//     "timestamp" : ISODate("2017-05-29T16:12:01.995Z"),
+//     "req_expire" : ISODate("2017-05-29T16:13:01.995Z")
 // }
 
 // /* 2 */
 // {
-//     "_id" : ObjectId("585e4701e27725c2b38f99bd"),
-//     "request_id" : "2",
-//     "route_id" : "1",
-//     "passenger_id" : "6",
-//     "origin" : {
-//         "name" : "Bts onnut",
-//         "lat" : "13.7055818",
-//         "lng" : "100.5988887",
-//         "addr" : "prakanong sukhumvit bkk"
+//     "_id" : ObjectId("592c48991ca221a1bf1a6e08"),
+//     "request_id" : "802",
+//     "route_id" : "595",
+//     "passenger_id" : "4",
+//     "note" : "",
+//     "req_status" : "cancel",
+//     "date" : {
+//         "time" : ISODate("2017-05-29T16:11:00.000Z")
 //     },
 //     "destination" : {
-//         "name" : "SWU",
+//         "name" : "Fortune Town",
+//         "lat" : "13.75762",
+//         "lng" : "100.5648"
+//     },
+//     "origin" : {
+//         "name" : "Srinakharinwirot University",
 //         "lat" : "13.7454649",
-//         "lng" : "100.5631804",
-//         "addr" : "sukhumvit23 bkk"
+//         "lng" : "100.5631804"
 //     },
-//     "date" : {
-//         "get_in" : ISODate("2016-12-12T16:30:00.000Z"),
-//         "get_out" : ISODate("2016-12-12T17:50:00.000Z")
-//     },
-//     "req_status" : "accepted",
-//     "note" : "going to temple"
+//     "__v" : 0,
+//     "timestamp" : ISODate("2017-05-29T16:13:13.826Z"),
+//     "req_expire" : ISODate("2017-05-29T16:14:13.826Z")
 // }
 
 // /* 3 */
 // {
-//     "_id" : ObjectId("585e47b3e27725c2b38f99be"),
-//     "request_id" : "3",
-//     "route_id" : "1",
-//     "passenger_id" : "3",
-//     "origin" : {
-//         "name" : "Bts onnut",
-//         "lat" : "13.7055818",
-//         "lng" : "100.5988887",
-//         "addr" : "prakanong sukhumvit bkk"
+//     "_id" : ObjectId("592c494b1ca221a1bf1a6e14"),
+//     "request_id" : "803",
+//     "route_id" : "596",
+//     "passenger_id" : "5",
+//     "note" : "",
+//     "req_status" : "arrived",
+//     "date" : {
+//         "time" : ISODate("2017-05-29T16:15:00.000Z"),
+//         "get_in" : ISODate("2017-05-29T16:16:00.000Z"),
+//         "get_out" : ISODate("2017-05-29T16:16:00.000Z")
 //     },
 //     "destination" : {
-//         "name" : "SWU",
-//         "lat" : "13.7454649",
-//         "lng" : "100.5631804",
-//         "addr" : "sukhumvit23 bkk"
+//         "name" : "BTS Bang Wa",
+//         "lat" : "13.720698",
+//         "lng" : "100.457804"
 //     },
-//     "date" : {
-//         "get_in" : ISODate("2016-12-12T16:30:00.000Z"),
-//         "get_out" : ISODate("2016-12-12T17:50:00.000Z")
+//     "origin" : {
+//         "name" : "A-Space Asoke-Ratchada",
+//         "lat" : "13.758232",
+//         "lng" : "100.560275"
 //     },
-//     "req_status" : "accepted",
-//     "note" : "please accept me"
+//     "__v" : 0,
+//     "timestamp" : ISODate("2017-05-29T16:16:11.362Z"),
+//     "req_expire" : ISODate("2017-05-29T16:17:11.362Z")
 // }
 
 // /* 4 */
 // {
-//     "_id" : ObjectId("585e4a20e27725c2b38f99bf"),
-//     "request_id" : "4",
-//     "route_id" : "2",
-//     "passenger_id" : "2",
-//     "origin" : {
-//         "name" : "Siam Paragon",
-//         "lat" : "13.7459332",
-//         "lng" : "100.5325513",
-//         "addr" : "patumwan bkk"
+//     "_id" : ObjectId("592c4c8b1ca221a1bf1a6e1a"),
+//     "request_id" : "804",
+//     "route_id" : "597",
+//     "passenger_id" : "4",
+//     "note" : "",
+//     "req_status" : "arrived",
+//     "date" : {
+//         "time" : ISODate("2017-05-29T16:29:00.000Z"),
+//         "get_in" : ISODate("2017-05-29T16:31:00.000Z"),
+//         "get_out" : ISODate("2017-05-29T16:31:00.000Z")
 //     },
 //     "destination" : {
-//         "name" : "SWU",
+//         "name" : "Central Rama 9",
+//         "lat" : "13.758439",
+//         "lng" : "100.566164"
+//     },
+//     "origin" : {
+//         "name" : "Srinakharinwirot University",
 //         "lat" : "13.7454649",
-//         "lng" : "100.5631804",
-//         "addr" : "sukhumvit23 bkk"
+//         "lng" : "100.5631804"
 //     },
-//     "date" : {
-//         "get_in" : ISODate("2016-12-22T08:30:00.000Z"),
-//         "get_out" : ISODate("2016-12-22T09:30:00.000Z")
-//     },
-//     "req_status" : "accepted",
-//     "note" : "front of temple"
+//     "__v" : 0,
+//     "timestamp" : ISODate("2017-05-29T16:30:03.764Z"),
+//     "req_expire" : ISODate("2017-05-29T16:31:03.764Z")
 // }
 
 // /* 5 */
 // {
-//     "_id" : ObjectId("585e4c32e27725c2b38f99c0"),
-//     "request_id" : "5",
-//     "route_id" : "2",
-//     "passenger_id" : "4",
-//     "origin" : {
-//         "name" : "Siam Paragon",
-//         "lat" : "13.7459332",
-//         "lng" : "100.5325513",
-//         "addr" : "patumwan bkk"
-//     },
-//     "destination" : {
-//         "name" : "SWU",
-//         "lat" : "13.7454649",
-//         "lng" : "100.5631804",
-//         "addr" : "sukhumvit23 bkk"
-//     },
-//     "date" : {
-//         "get_in" : ISODate("2016-12-22T08:30:00.000Z"),
-//         "get_out" : ISODate("2016-12-22T09:30:00.000Z")
-//     },
-//     "req_status" : "accepted",
-//     "note" : "see me around big-c"
-// }
-
-// /* 6 */
-// {
-//     "_id" : ObjectId("585e4ed9e27725c2b38f99c1"),
-//     "request_id" : "6",
-//     "route_id" : "3",
+//     "_id" : ObjectId("592c4c8d1ca221a1bf1a6e1b"),
+//     "request_id" : "805",
+//     "route_id" : "597",
 //     "passenger_id" : "5",
-//     "origin" : {
-//         "name" : "True tower",
-//         "lat" : "13.762409",
-//         "lng" : "100.5659413",
-//         "addr" : "dindaeng bkk"
-//     },
-//     "destination" : {
-//         "name" : "Bts onnut",
-//         "lat" : "13.7055818",
-//         "lng" : "100.5988887",
-//         "addr" : "prakanong sukhumvit bkk"
-//     },
+//     "note" : "",
+//     "req_status" : "arrived",
 //     "date" : {
-//         "get_in" : ISODate("2016-12-13T09:30:00.000Z"),
-//         "get_out" : ISODate("2016-12-13T11:00:00.000Z")
-//     },
-//     "req_status" : "accepted",
-//     "note" : "go go go"
-// }
-
-// /* 7 */
-// {
-//     "_id" : ObjectId("585e5335e27725c2b38f99c2"),
-//     "request_id" : "7",
-//     "route_id" : "4",
-//     "passenger_id" : "1",
-//     "origin" : {
-//         "name" : "Teminal 21",
-//         "lat" : "13.7376599",
-//         "lng" : "100.5582062",
-//         "addr" : "sukhumvit19 bkk"
+//         "time" : ISODate("2017-05-29T16:29:00.000Z"),
+//         "get_in" : ISODate("2017-05-29T16:31:00.000Z"),
+//         "get_out" : ISODate("2017-05-29T16:31:00.000Z")
 //     },
 //     "destination" : {
-//         "name" : "SWU",
-//         "lat" : "13.7454649",
-//         "lng" : "100.5631804",
-//         "addr" : "sukhumvit23 bkk"
+//         "name" : "Central Rama 9",
+//         "lat" : "13.758439",
+//         "lng" : "100.566164"
 //     },
-//     "date" : {
-//         "get_in" : ISODate("2016-12-16T09:00:00.000Z"),
-//         "get_out" : ISODate("2016-12-16T09:30:00.000Z")
-//     },
-//     "req_status" : "accepted",
-//     "note" : "accept me please"
-// }
-
-// /* 8 */
-// {
-//     "_id" : ObjectId("585e539ee27725c2b38f99c3"),
-//     "request_id" : "8",
-//     "route_id" : "4",
-//     "passenger_id" : "5",
 //     "origin" : {
-//         "name" : "Teminal 21",
-//         "lat" : "13.7376599",
-//         "lng" : "100.5582062",
-//         "addr" : "sukhumvit19 bkk"
-//     },
-//     "destination" : {
-//         "name" : "SWU",
+//         "name" : "Srinakharinwirot University",
 //         "lat" : "13.7454649",
-//         "lng" : "100.5631804",
-//         "addr" : "sukhumvit23 bkk"
+//         "lng" : "100.5631804"
 //     },
-//     "req_status" : "timeout",
-//     "note" : "i have pet"
-// }
-
-// /* 9 */
-// {
-//     "_id" : ObjectId("585e545ce27725c2b38f99c4"),
-//     "request_id" : "9",
-//     "route_id" : "4",
-//     "passenger_id" : "6",
-//     "origin" : {
-//         "name" : "Teminal 21",
-//         "lat" : "13.7376599",
-//         "lng" : "100.5582062",
-//         "addr" : "sukhumvit19 bkk"
-//     },
-//     "destination" : {
-//         "name" : "SWU",
-//         "lat" : "13.7454649",
-//         "lng" : "100.5631804",
-//         "addr" : "sukhumvit23 bkk"
-//     },
-//     "req_status" : "denied",
-//     "note" : "im gay"
-// }
-
-// /* 10 */
-// {
-//     "_id" : ObjectId("585e5497e27725c2b38f99c5"),
-//     "request_id" : "10",
-//     "route_id" : "4",
-//     "passenger_id" : "6",
-//     "origin" : {
-//         "name" : "Teminal 21",
-//         "lat" : "13.7376599",
-//         "lng" : "100.5582062",
-//         "addr" : "sukhumvit19 bkk"
-//     },
-//     "destination" : {
-//         "name" : "SWU",
-//         "lat" : "13.7454649",
-//         "lng" : "100.5631804",
-//         "addr" : "sukhumvit23 bkk"
-//     },
-//     "req_status" : "cancel",
-//     "note" : "hey where are you"
+//     "__v" : 0,
+//     "timestamp" : ISODate("2017-05-29T16:30:05.061Z"),
+//     "req_expire" : ISODate("2017-05-29T16:31:05.061Z")
 // }
